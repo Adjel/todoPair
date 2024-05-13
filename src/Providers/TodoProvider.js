@@ -10,6 +10,16 @@ export default function TodoProvider({ children }) {
   const { user } = useContext(UserContext);
 
   useEffect(() => {
+    setTodos([
+      {
+        title: "tozz",
+        isCompleted: false,
+      },
+      {
+        title: "zozoz",
+        isCompleted: true,
+      },
+    ]);
     if (user) {
       const todosRef = collection(db, "users", user?.uid, "todos");
 
