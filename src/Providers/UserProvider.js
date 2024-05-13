@@ -1,5 +1,9 @@
 import React, { createContext, useState } from "react";
-import { auth, createUserWithEmailAndPassword } from "@/Firebase";
+import {
+  auth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from "@/Firebase";
 
 export const UserContext = createContext();
 
@@ -40,8 +44,31 @@ export default function UserProvider({ children }) {
       });
   };
 
+  const handleLogIn = async ({ email, password }, notify) => {
+    await signInWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        // Signed in
+        console.log(userCredential.user);
+        setUser(userCredential.user);
+        // ...
+      })
+      .catch((error) => {
+        console.log(error.message);
+        if (
+          error.code === "auth/missing-password" ||
+          error.code === "auth/invalid-password" ||
+          error.code === "auth/missing-email" ||
+          error.code === "auth/invalid-email"
+        ) {
+          notify("Invalid email or password");
+        } else {
+          notify(error.message);
+        }
+      });
+  };
+
   return (
-    <UserContext.Provider value={{ user, handleRegister }}>
+    <UserContext.Provider value={{ user, handleRegister, handleLogIn }}>
       {children}
     </UserContext.Provider>
   );
