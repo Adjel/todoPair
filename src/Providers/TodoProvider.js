@@ -1,7 +1,38 @@
-import React, { createContext } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
+import { db, onSnapshot, collection } from "@/Firebase";
+import { UserContext } from "./UserProvider";
 
-export const TodoContext = createContext("");
+export const TodoContext = createContext();
 
 export default function TodoProvider({ children }) {
-  return <TodoContext.Provider value="">{children}</TodoContext.Provider>;
+  const [todos, setTodos] = useState([]);
+
+  const { user } = useContext(UserContext);
+
+  useEffect(() => {
+    if (user) {
+      const todosRef = collection(db, "users", user?.uid, "todos");
+
+      const unsubscribe = onSnapshot(todosRef, (querySnapshot) => {
+        const allTodos = [];
+
+        querySnapshot.forEach((doc) => {
+          allTodos.push({
+            id: doc.id,
+            ...doc.data(),
+          });
+        });
+
+        setTodos(allTodos);
+      });
+
+      return () => {
+        unsubscribe();
+      };
+    }
+  }, [user]);
+
+  return (
+    <TodoContext.Provider value={{ todos }}>{children}</TodoContext.Provider>
+  );
 }
