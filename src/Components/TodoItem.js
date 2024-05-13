@@ -1,6 +1,11 @@
 import React from "react";
 import AddTodo from "./AddTodo";
 
-export default function TodoItem() {
-  return <div>Todo</div>;
+export default function TodoItem({ title, isCompleted }) {
+  return (
+    <>
+      <div>{title}</div>
+      <div>{isCompleted}</div>
+    </>
+  );
 }

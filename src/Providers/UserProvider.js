@@ -55,7 +55,6 @@ export default function UserProvider({ children }) {
     await signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         // Signed in
-        console.log(userCredential.user);
         setUserStatus(userCredential.user);
         // ...
       })
