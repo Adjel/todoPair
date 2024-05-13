@@ -1,7 +1,12 @@
-"use client";
 import Login from "@/pages/Login";
-import Link from "next/link";
+import { Providers } from "@/Providers/Providers";
 
-export default function Page() {
-  return <Login />;
+function Page() {
+  return (
+    <Providers>
+      <Login />
+    </Providers>
+  );
 }
+
+export default Page;
