@@ -12,7 +12,7 @@ export default function Login() {
     password: "",
   });
 
-  let { user, handleLogIn } = useContext(UserContext);
+  const { user, handleLogIn } = useContext(UserContext);
 
   const router = useRouter();
   const notify = (message) =>
@@ -22,7 +22,13 @@ export default function Login() {
     });
 
   useEffect(() => {
-    if (user) router.push("/TodoList");
+    if (user) {
+      router.push("/TodoList");
+      setCredential({
+        email: "",
+        password: "",
+      });
+    }
   }, [user]);
 
   function handleOnchange(event) {
@@ -38,28 +44,10 @@ export default function Login() {
   async function handleSubmit(event) {
     event.preventDefault();
     if (credential.email === "") {
-      return notify("You need an email to register");
-    }
-    // invalid email
-    const regexEmail = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g;
-    if (!regexEmail.test(credential.email)) {
-      return notify("this email is not valid");
+      return notify("You need an email to sign in");
     }
     if (credential.password === "") {
-      return notify("You need a password to register");
-    }
-    // invalid password
-    const regexPassword =
-      /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/gm;
-    if (!regexPassword.test(credential.password)) {
-      return notify(
-        `invalid password, the password need:
-           One uppercase 
-           One undercase 
-           At least 8 chart 
-           One special chart
-           `
-      );
+      return notify("You need a password to sign in");
     }
     await handleLogIn(credential, notify);
   }
@@ -87,6 +75,7 @@ export default function Login() {
           Log in
         </button>
       </form>
+      <ToastContainer />
       <Link href="/Register"> No account ? Register here</Link>
     </div>
   );
