@@ -1,5 +1,11 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { db, onSnapshot, collection } from "@/Firebase";
+import {
+  db,
+  onSnapshot,
+  collection,
+  addDoc,
+  serverTimestamp,
+} from "@/Firebase";
 import { UserContext } from "./UserProvider";
 
 export const TodoContext = createContext();
@@ -10,18 +16,8 @@ export default function TodoProvider({ children }) {
   const { user } = useContext(UserContext);
 
   useEffect(() => {
-    setTodos([
-      {
-        title: "tozz",
-        isCompleted: false,
-      },
-      {
-        title: "zozoz",
-        isCompleted: true,
-      },
-    ]);
     if (user) {
-      const todosRef = collection(db, "users", user?.uid, "todos");
+      const todosRef = collection(db, "users", user.uid, "todos");
 
       const unsubscribe = onSnapshot(todosRef, (querySnapshot) => {
         const allTodos = [];
@@ -42,7 +38,20 @@ export default function TodoProvider({ children }) {
     }
   }, [user]);
 
+  async function handleTodo({ title, isCompleted }) {
+    const todosRef = collection(db, "users", user.uid, "todos");
+    const todoRef = await addDoc(todosRef, {
+      title: title,
+      isCompleted: isCompleted,
+      createdAt: serverTimestamp(),
+    }).catch((error) => {
+      console.log(error.message);
+    });
+  }
+
   return (
-    <TodoContext.Provider value={{ todos }}>{children}</TodoContext.Provider>
+    <TodoContext.Provider value={{ todos, handleTodo }}>
+      {children}
+    </TodoContext.Provider>
   );
 }
