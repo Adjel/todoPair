@@ -32,7 +32,12 @@ export default function Register() {
       /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/gm;
     if (!regexPassword.test(credential.password)) {
       return console.log(
-        "invalid password, the password need: One uppercase, one undercase, at least 8 chart and one special chart"
+        `invalid password, the password need:
+         One uppercase 
+         One undercase 
+         At least 8 chart 
+         One special chart
+         `
       );
     }
     // already exist email
