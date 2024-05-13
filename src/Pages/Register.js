@@ -17,6 +17,29 @@ export default function Register() {
     });
   }
 
+  function handleSubmit(event) {
+    event.preventDefault();
+    if (credential.email === "" || credential.password === "") {
+      return console.log(`${credential}:empty email or password`);
+    }
+    // invalid email
+    const regexEmail = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g;
+    if (!regexEmail.test(credential.email)) {
+      return console.log("email invalide");
+    }
+    // invalid password
+    const regexPassword =
+      /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/gm;
+    if (!regexPassword.test(credential.password)) {
+      return console.log(
+        "invalid password, the password need: One uppercase, one undercase, at least 8 chart and one special chart"
+      );
+    }
+    // already exist email
+    // todo
+    console.log({ credential });
+  }
+
   return (
     <div>
       <form>
@@ -36,6 +59,9 @@ export default function Register() {
           value={credential.password}
           onChange={(event) => handleOnchange(event)}
         ></input>
+        <button type="submit" onClick={(event) => handleSubmit(event)}>
+          sign up
+        </button>
       </form>
       <Link href={"/Login"}>login</Link>
     </div>
