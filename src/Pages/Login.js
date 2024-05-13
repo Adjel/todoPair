@@ -12,7 +12,7 @@ export default function Login() {
     password: "",
   });
 
-  const { user, handleLogIn } = useContext(UserContext);
+  const { user, handleLogIn, disconnected } = useContext(UserContext);
 
   const router = useRouter();
   const notify = (message) =>
@@ -29,6 +29,7 @@ export default function Login() {
         password: "",
       });
     }
+    if (disconnected) notify(`you're disconnect`);
   }, [user]);
 
   function handleOnchange(event) {

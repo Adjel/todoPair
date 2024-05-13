@@ -15,6 +15,7 @@ export default function Register() {
   const { user, handleRegister } = useContext(UserContext);
 
   const router = useRouter();
+
   const notify = (message) =>
     toast(message, {
       autoClose: 3500,
