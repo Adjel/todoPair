@@ -2,6 +2,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import Link from "next/link";
 import { UserContext } from "@/Providers/UserProvider";
+import { useRouter } from "next/navigation";
 
 export default function Register() {
   const [credential, setCredential] = useState({
@@ -10,6 +11,11 @@ export default function Register() {
   });
 
   const { user, handleRegister } = useContext(UserContext);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (user) router.push("/TodoList");
+  }, [user]);
 
   function handleOnchange(event) {
     const { name, value } = event.target;
@@ -21,7 +27,7 @@ export default function Register() {
     });
   }
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
     if (credential.email === "" || credential.password === "") {
       return console.log(`${credential}:empty email or password`);
@@ -47,7 +53,7 @@ export default function Register() {
     // already exist email
     // todo
     console.log({ credential });
-    handleRegister(credential);
+    await handleRegister(credential);
   }
 
   return (
