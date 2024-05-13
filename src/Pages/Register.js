@@ -9,11 +9,7 @@ export default function Register() {
     password: "",
   });
 
-  const { handleRegister, user } = useContext(UserContext);
-
-  useEffect(() => {
-    console.log({ user });
-  }, [credential]);
+  const { user, handleRegister } = useContext(UserContext);
 
   function handleOnchange(event) {
     const { name, value } = event.target;
@@ -27,7 +23,6 @@ export default function Register() {
 
   function handleSubmit(event) {
     event.preventDefault();
-    handleRegister(credential);
     if (credential.email === "" || credential.password === "") {
       return console.log(`${credential}:empty email or password`);
     }
@@ -52,6 +47,7 @@ export default function Register() {
     // already exist email
     // todo
     console.log({ credential });
+    handleRegister(credential);
   }
 
   return (
