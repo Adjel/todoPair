@@ -3,6 +3,8 @@ import React, { useContext, useEffect, useState } from "react";
 import Link from "next/link";
 import { UserContext } from "@/Providers/UserProvider";
 import { useRouter } from "next/navigation";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function Register() {
   const [credential, setCredential] = useState({
@@ -11,7 +13,13 @@ export default function Register() {
   });
 
   const { user, handleRegister } = useContext(UserContext);
+
   const router = useRouter();
+  const notify = (message) =>
+    toast(message, {
+      autoClose: 3500,
+      hideProgressBar: true,
+    });
 
   useEffect(() => {
     if (user) router.push("/TodoList");
@@ -29,19 +37,22 @@ export default function Register() {
 
   async function handleSubmit(event) {
     event.preventDefault();
-    if (credential.email === "" || credential.password === "") {
-      return console.log(`${credential}:empty email or password`);
+    if (credential.email === "") {
+      return notify("You need an email to register");
     }
     // invalid email
     const regexEmail = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g;
     if (!regexEmail.test(credential.email)) {
-      return console.log("email invalide");
+      return notify("this email is not valid");
+    }
+    if (credential.password === "") {
+      return notify("You need a password to register");
     }
     // invalid password
     const regexPassword =
       /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/gm;
     if (!regexPassword.test(credential.password)) {
-      return console.log(
+      return notify(
         `invalid password, the password need:
          One uppercase 
          One undercase 
@@ -50,10 +61,7 @@ export default function Register() {
          `
       );
     }
-    // already exist email
-    // todo
-    console.log({ credential });
-    await handleRegister(credential);
+    await handleRegister(credential, notify);
   }
 
   return (
@@ -79,6 +87,7 @@ export default function Register() {
           sign up
         </button>
       </form>
+      <ToastContainer />
       <Link href={"/Login"}>login</Link>
     </div>
   );
