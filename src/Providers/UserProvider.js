@@ -3,18 +3,25 @@ import {
   auth,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  signOut,
 } from "@/Firebase";
 
 export const UserContext = createContext();
 
 export default function UserProvider({ children }) {
   const [user, setUser] = useState();
+  const [disconnected, setDisconnected] = useState(false);
+
+  function setUserStatus(newUser) {
+    setUser(newUser ? newUser : undefined);
+    setDisconnected(!newUser ? true : false);
+  }
 
   const handleRegister = async ({ email, password }, notify) => {
     await createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         // Signed up
-        setUser(userCredential.user);
+        setUserStatus(userCredential.user);
         // ...
       })
       .catch((error) => {
@@ -49,7 +56,7 @@ export default function UserProvider({ children }) {
       .then((userCredential) => {
         // Signed in
         console.log(userCredential.user);
-        setUser(userCredential.user);
+        setUserStatus(userCredential.user);
         // ...
       })
       .catch((error) => {
@@ -58,6 +65,7 @@ export default function UserProvider({ children }) {
           error.code === "auth/missing-password" ||
           error.code === "auth/invalid-password" ||
           error.code === "auth/missing-email" ||
+          error.code === "auth/invalid-credential" ||
           error.code === "auth/invalid-email"
         ) {
           notify("Invalid email or password");
@@ -67,8 +75,22 @@ export default function UserProvider({ children }) {
       });
   };
 
+  function handleSignOut() {
+    signOut(auth)
+      .then(() => {
+        // Sign-out successful.
+        setUserStatus();
+      })
+      .catch((error) => {
+        // An error happened.
+        console.log(error.message);
+      });
+  }
+
   return (
-    <UserContext.Provider value={{ user, handleRegister, handleLogIn }}>
+    <UserContext.Provider
+      value={{ user, handleRegister, handleLogIn, handleSignOut, disconnected }}
+    >
       {children}
     </UserContext.Provider>
   );
