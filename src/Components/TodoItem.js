@@ -1,5 +1,6 @@
 import React from "react";
+import AddTodo from "./AddTodo";
 
 export default function TodoItem() {
-  return <div>TodoItem</div>;
+  return <div>Todo</div>;
 }
