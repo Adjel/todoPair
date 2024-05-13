@@ -1,11 +1,19 @@
-import React, { useState } from "react";
+"use client";
+import React, { useContext, useEffect, useState } from "react";
 import Link from "next/link";
+import { UserContext } from "@/Providers/UserProvider";
 
 export default function Register() {
   const [credential, setCredential] = useState({
     email: "",
     password: "",
   });
+
+  const { handleRegister, user } = useContext(UserContext);
+
+  useEffect(() => {
+    console.log({ user });
+  }, [credential]);
 
   function handleOnchange(event) {
     const { name, value } = event.target;
@@ -19,6 +27,7 @@ export default function Register() {
 
   function handleSubmit(event) {
     event.preventDefault();
+    handleRegister(credential);
     if (credential.email === "" || credential.password === "") {
       return console.log(`${credential}:empty email or password`);
     }

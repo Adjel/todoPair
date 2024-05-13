@@ -1,5 +1,10 @@
 import Login from "@/Pages/Login";
+import { Providers } from "@/Providers/Providers";
 
 export default function Home() {
-  return <Login />;
+  return (
+    <Providers>
+      <Login />
+    </Providers>
+  );
 }
