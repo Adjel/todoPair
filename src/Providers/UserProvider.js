@@ -13,7 +13,7 @@ export default function UserProvider({ children }) {
   const [disconnected, setDisconnected] = useState(false);
 
   function setUserStatus(newUser) {
-    setUser(newUser ? newUser : undefined);
+    setUser(newUser);
     setDisconnected(!newUser ? true : false);
   }
 

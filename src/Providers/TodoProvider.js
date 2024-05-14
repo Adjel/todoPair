@@ -24,8 +24,8 @@ export default function TodoProvider({ children }) {
 
         querySnapshot.forEach((doc) => {
           allTodos.push({
-            id: doc.id,
             ...doc.data(),
+            id: doc.id,
           });
         });
 
@@ -38,16 +38,15 @@ export default function TodoProvider({ children }) {
     }
   }, [user]);
 
-  async function handleTodo({ title, isCompleted }) {
+  const handleTodo = async ({ title, isCompleted }) => {
     const todosRef = collection(db, "users", user.uid, "todos");
     const todoRef = await addDoc(todosRef, {
-      title: title,
-      isCompleted: isCompleted,
+      completed: isCompleted,
       createdAt: serverTimestamp(),
-    }).catch((error) => {
-      console.log(error.message);
+      title: title,
     });
-  }
+    return todoRef;
+  };
 
   return (
     <TodoContext.Provider value={{ todos, handleTodo }}>

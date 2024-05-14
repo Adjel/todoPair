@@ -11,7 +11,7 @@ export default function TodoItem({ title, isCompleted }) {
         type="checkbox"
         id="completed"
         name="completed"
-        checked={isCompleted}
+        defaultChecked={isCompleted}
       ></input>
     </Wrapper>
   );

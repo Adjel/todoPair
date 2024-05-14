@@ -1,5 +1,8 @@
+"use client";
 import { TodoContext } from "@/Providers/TodoProvider";
 import React, { useContext, useEffect, useState } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function AddTodo() {
   const [newTodo, setNewTodo] = useState({
@@ -7,11 +10,13 @@ export default function AddTodo() {
     isCompleted: false,
   });
 
-  const { handleTodo } = useContext(TodoContext);
+  const { handleTodo, todos } = useContext(TodoContext);
 
-  useEffect(() => {
-    console.log(newTodo.isCompleted);
-  }, []);
+  const notify = (message) =>
+    toast(message, {
+      autoClose: 3500,
+      hideProgressBar: true,
+    });
 
   const handleNewTodo = (event) => {
     const { name, value, checked } = event.target;
@@ -23,7 +28,16 @@ export default function AddTodo() {
 
   async function createTodo(event) {
     event.preventDefault();
-    await handleTodo(newTodo);
+    if (newTodo.title === "")
+      return notify("This todo already exist, you have to set another title");
+    if (todos.find((item) => item.title === newTodo.title))
+      return notify("This todo already exist, you have to set another title");
+    if (await handleTodo(newTodo)) {
+      setNewTodo({
+        title: "",
+        isCompleted: false,
+      });
+    }
   }
 
   return (
@@ -34,7 +48,7 @@ export default function AddTodo() {
           type="text"
           id="title"
           name="title"
-          value={newTodo.name}
+          value={newTodo.title}
           onChange={(event) => handleNewTodo(event)}
         ></input>
         <label htmlFor="isCompleted">Completed</label>

@@ -18,8 +18,8 @@ export default function TodoList() {
 
   return (
     <div>
-      {todos.map((item) => (
-        <TodoItem title={item.title} isCompleted={item.isCompleted} />
+      {todos.map(({ title, completed }) => (
+        <TodoItem title={title} isCompleted={completed} />
       ))}
       <AddTodo />
       <Disconnect />
