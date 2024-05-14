@@ -5,6 +5,9 @@ import {
   collection,
   addDoc,
   serverTimestamp,
+  updateDoc,
+  doc,
+  deleteDoc,
 } from "@/Firebase";
 import { UserContext } from "./UserProvider";
 
@@ -48,8 +51,36 @@ export default function TodoProvider({ children }) {
     return todoRef;
   };
 
+  async function handleUpdateTodo({ title, isCompleted, id }, notify) {
+    try {
+      const todosRef = doc(db, "users", user.uid, "todos", id);
+      await updateDoc(todosRef, {
+        title: title,
+        completed: isCompleted,
+        createdAt: serverTimestamp(),
+      });
+      return true;
+    } catch (error) {
+      notify(error);
+    }
+  }
+
+  async function handleDelete(todo, notify) {
+    try {
+      const todoRef = doc(db, "users", user.uid, "todos", todo.id);
+      await deleteDoc(todoRef).then(() => {
+        return true;
+      });
+    } catch (e) {
+      notify(e);
+      return false;
+    }
+  }
+
   return (
-    <TodoContext.Provider value={{ todos, handleTodo }}>
+    <TodoContext.Provider
+      value={{ todos, handleTodo, handleUpdateTodo, handleDelete, setTodos }}
+    >
       {children}
     </TodoContext.Provider>
   );
